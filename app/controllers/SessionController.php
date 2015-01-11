@@ -34,6 +34,7 @@ class SessionController extends \BaseController {
             Session::set('user', User::whereId(Auth::id())->first());
 
             return Redirect::to('/');
+           
         }
 
 

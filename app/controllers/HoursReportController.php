@@ -18,7 +18,7 @@ class HoursReportController extends \BaseController {
      */
     public function create() {
         $report = null;
-          $sum = null;
+        $sum = null;
         return View::make('pages.report', compact('report', 'sum'));
     }
 
@@ -38,25 +38,19 @@ class HoursReportController extends \BaseController {
      * @return Response
      */
     public function show() {
-        $input = Input::all();
-        $from = Input::get('from');
-        $to = Input::get('to');
-        $from = date('Y-m-d', strtotime($from));
-        $to = date('Y-m-d', strtotime($to));
 
-        $id = Auth::user()->id;
-        $report = Hours::with('user')->whereBetween('date', [$from, $to])->whereUserId($id)->get();
-        $test = Hours::whereBetween('date', [$from, $to])->whereUserId($id)->lists('sum');
-        
+        $from = date('Y-m-d', strtotime(Input::get('from')));
+        $to = date('Y-m-d', strtotime( Input::get('to')));
+        $report = Hours::with('user')->whereBetween('date', [$from, $to])->whereUserId(Auth::user()->id)->get();
+        $time = Hours::whereBetween('date', [$from, $to])->whereUserId(Auth::user()->id)->lists('sum');
         $sum = 0;
-        foreach ($test as $t){
-            $sum += strtotime($t);
+ 
+        foreach ($time as $t){
+            $sum += $t;
         }
-        $sum = date('H:i', $sum);
+       
 
-    return View::make('pages.report', compact('report', 'sum'));
-        
-      
+        return View::make('pages.report', compact('report', 'sum'));
     }
 
     /**
